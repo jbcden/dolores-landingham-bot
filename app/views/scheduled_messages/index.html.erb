@@ -46,6 +46,12 @@
             <span>Test</span>
           <% end %>
         </td>
+        <td>
+          <a class="button button-delete" data-confirm="Are you sure you want to delete this message?" rel="nofollow" data-method="delete" href="/scheduled_messages/<%= message.id %>">
+            <icon class="icon-circle-x"></icon>
+            Delete
+          </a>
+        </td>
       </tr>
     <% end %>
   </table>
