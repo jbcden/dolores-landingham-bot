@@ -7,7 +7,9 @@ class EmployeesController < ApplicationController
   def create
     @employee = Employee.new(employee_params)
 
-    if unknown_employee(@employee.slack_username)
+    if !@employee.valid?
+      render action: :new
+    elsif unknown_employee(@employee.slack_username)
       flash.now[:error] = "There is not a slack user with the username \"#{@employee.slack_username}\" in your organization."
       render action: :new
     elsif @employee.save
