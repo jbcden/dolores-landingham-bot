@@ -14,33 +14,11 @@ describe ScheduledMessage do
   end
 
   describe '.date_time_ordering' do
-    let(:tags) { ['testing', 'testing2'] }
-    let!(:message1) do
-      ScheduledMessage.create!(title: 'test1',
-                               body: 'this is the first test',
-                               days_after_start: 1,
-                               time_of_day: '2000-01-01 16:00:00 UTC',
-                               tag_list: tags)
-    end
-
-    let!(:message2) do
-      ScheduledMessage.create!(title: 'test2',
-                               body: 'this is the second test',
-                               days_after_start: 1,
-                               time_of_day: '2000-01-01 14:00:00 UTC',
-                               tag_list: tags)
-    end
-
-    let!(:message3) do
-      ScheduledMessage.create!(title: 'test3',
-                               body: 'this is the third test',
-                               days_after_start: 1,
-                               time_of_day: '2000-01-01 11:00:00 UTC',
-                               tag_list: tags)
-    end
-
     it 'should display the messages in chronological order' do
-      expect(ScheduledMessage.date_time_ordering.first).to eq(message3)
+      m1 = create(:scheduled_message, time_of_day: '2000-01-01 16:00:00 UTC')
+      m2 = create(:scheduled_message, time_of_day: '2000-01-01 14:00:00 UTC')
+      m3 = create(:scheduled_message, time_of_day: '2000-01-01 11:00:00 UTC')
+      expect(ScheduledMessage.date_time_ordering).to match_array([m1, m2, m3])
     end
   end
 end
