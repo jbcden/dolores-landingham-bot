@@ -11,11 +11,11 @@ feature "View scheduled messages" do
     expect(page).to have_content(first_scheduled_message.title)
     expect(page).to have_content(first_scheduled_message.body)
     expect(page).to have_content(first_scheduled_message.days_after_start)
-    expect(page).to have_content(get_formatted_time(first_scheduled_message))
+    expect(page).to have_content(formatted_time(first_scheduled_message))
     expect(page).to have_content(second_scheduled_message.title)
     expect(page).to have_content(second_scheduled_message.body)
     expect(page).to have_content(second_scheduled_message.days_after_start)
-    expect(page).to have_content(get_formatted_time(second_scheduled_message))
+    expect(page).to have_content(formatted_time(second_scheduled_message))
   end
 
   scenario "sees pagination controls" do
@@ -30,7 +30,7 @@ feature "View scheduled messages" do
     expect(page).to have_content(first_scheduled_message.title)
     expect(page).to have_content(first_scheduled_message.body)
     expect(page).to have_content(first_scheduled_message.days_after_start)
-    expect(page).to have_content(get_formatted_time(first_scheduled_message))
+    expect(page).to have_content(formatted_time(first_scheduled_message))
 
     expect(page).not_to have_content(second_scheduled_message.title)
 
@@ -44,7 +44,7 @@ feature "View scheduled messages" do
     expect(page).to have_content(second_scheduled_message.title)
     expect(page).to have_content(second_scheduled_message.body)
     expect(page).to have_content(second_scheduled_message.days_after_start)
-    expect(page).to have_content(get_formatted_time(second_scheduled_message))
+    expect(page).to have_content(formatted_time(second_scheduled_message))
 
     expect(page).to have_content("Prev")
     expect(page).to have_content("First")
@@ -57,15 +57,21 @@ feature "View scheduled messages" do
 
     visit scheduled_messages_path
 
-    expect(page).to have_selector("table > tr:nth-child(2) > td:nth-child(2)",
-                                  text: get_formatted_time(first_scheduled_message).strip)
-    expect(page).to have_selector("table > tr:nth-child(3) > td:nth-child(2)",
-                                  text: get_formatted_time(second_scheduled_message).strip)
+    expect(page).to have_message_in_order(message: first_scheduled_message,
+                                          order: 1)
+    expect(page).to have_message_in_order(message: second_scheduled_message,
+                                          order: 2)
   end
 
   private
 
-  def get_formatted_time(scheduled_message)
+  def have_message_in_order(message:, order:)
+    order = order + 1
+    have_selector("table > tr:nth-child(#{order}) > td:nth-child(2)",
+                  text: formatted_time(message).strip)
+  end
+
+  def formatted_time(scheduled_message)
     scheduled_message.time_of_day.strftime("%l:%M %p")
   end
 
