@@ -7,19 +7,11 @@ class EmployeesController < ApplicationController
   def create
     @employee = Employee.new(employee_params)
 
-    if !@employee.valid?
-      render action: :new
-    elsif unknown_employee(@employee.slack_username)
-      flash.now[:error] = "There is not a slack user with the username \"#{@employee.slack_username}\" in your organization."
-      render action: :new
-    elsif @employee.save
+    if @employee.save
       flash[:notice] = "Thanks for adding #{@employee.slack_username}"
       redirect_to root_path
-    elsif !unknown_employee(@employee.slack_username)
-      flash.now[:error] = "There is already a slack user with the username \"#{@employee.slack_username}\" in your organization."
-      render action: :new
-    elsif
-      flash.now[:error] = "Could not create employee"
+    else
+      flash.now[:error] = @employee.errors.full_messages.to_sentence
       render action: :new
     end
   end
