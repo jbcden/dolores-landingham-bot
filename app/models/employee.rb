@@ -3,7 +3,17 @@ class Employee < ActiveRecord::Base
 
   has_many :sent_scheduled_messages, dependent: :destroy
 
-  validates :slack_username, presence: true, uniqueness: true, format: { with: /\A[a-z_0-9.]+\z/, message: "Slack usernames can only contain lowercase letters, numbers, underscores, and periods." }
+  validates :slack_username,
+    presence: true,
+    uniqueness: true,
+    inclusion: {
+      in: EmployeeFinder.new
+            .users_list
+            .map { |h| h['name'] },
+      message: "There is not a slack user with the username \"%{value}\" in"\
+        " your organization."
+    },
+    format: { with: /\A[a-z_0-9.]+\z/, message: "Slack usernames can only contain lowercase letters, numbers, underscores, and periods." }
   validates :started_on, presence: true
   validates :time_zone, presence: true
 
